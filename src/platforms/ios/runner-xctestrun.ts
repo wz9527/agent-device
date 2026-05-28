@@ -20,6 +20,7 @@ import {
   isExpectedRunnerRepairFailure,
 } from './runner-macos-products.ts';
 import { resolveExistingXctestrunProductPaths } from './runner-xctestrun-products.ts';
+import { applyXctestRunnerAppIcon } from './runner-icon.ts';
 
 const DEFAULT_IOS_RUNNER_APP_BUNDLE_ID = 'com.callstack.agentdevice.runner';
 const XCTEST_DEVICE_SET_BASE_NAME = 'XCTestDevices';
@@ -482,6 +483,7 @@ export async function ensureXctestrun(
           existing.productPaths,
           existing.xctestrunPath,
         );
+        await applyXctestRunnerAppIcon(existing.productPaths);
         emitRunnerXctestrunDecision('reuse', 'reuse_ready', {
           derived,
           xctestrunPath: existing.xctestrunPath,
@@ -534,6 +536,7 @@ export async function ensureXctestrun(
       });
     }
     await repairMacOsRunnerProductsIfNeeded(device, builtProductPaths, built);
+    await applyXctestRunnerAppIcon(builtProductPaths);
     writeRunnerCacheMetadata(
       derived,
       withRunnerCacheArtifacts(expectedCacheMetadata, built, builtProductPaths),
@@ -812,6 +815,9 @@ function isRunnerSourceFile(fileName: string, filePath: string): boolean {
     return filePath.includes(`${path.sep}.xcodeproj${path.sep}`);
   }
   return [
+    '.jpg',
+    '.json',
+    '.png',
     '.swift',
     '.plist',
     '.entitlements',

@@ -104,4 +104,8 @@ xcodebuild build-for-testing \
   ENABLE_CODE_COVERAGE=NO \
   $SIGNING_BUILD_SETTINGS
 
+node --experimental-strip-types --input-type=module -e '
+  import { applyXctestRunnerAppIconFromDerivedPath } from "./src/platforms/ios/runner-icon.ts";
+  await applyXctestRunnerAppIconFromDerivedPath(process.argv[1]);
+' "$DERIVED_PATH"
 node scripts/write-xcuitest-cache-metadata.mjs "$PLATFORM" "$DERIVED_PATH" "$DESTINATION"
